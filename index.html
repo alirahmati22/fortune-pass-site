@@ -16,9 +16,16 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
         h1 {
             font-size: 3rem;
+        }
+        p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 10px auto;
+            line-height: 1.5;
         }
         a {
             display: block;
@@ -47,6 +54,7 @@
 </head>
 <body>
     <h1>Fortune Pass NFT</h1>
+    <p>The exclusive Fortune Pass NFT collection offers unique digital assets with premium access to special features, events, and rewards. Own a piece of the future!</p>
     <p>Follow us on:</p>
     <a href="https://x.com/Fortunepassnft0" target="_blank">Twitter (X)</a>
     <button onclick="connectWallet()">Connect Wallet</button>
@@ -81,8 +89,17 @@
             }
 
             const contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
+
             try {
-                await contract.methods.buyNFT().send({ from: userAccount, value: web3.utils.toWei("0.1", "ether") });
+                // دریافت قیمت NFT از قرارداد
+                const price = await contract.methods.claimCondition().call(); // تابع دریافت قیمت را بررسی کنید
+                const priceInWei = web3.utils.toWei(price.toString(), "ether");
+
+                await contract.methods.claim().send({
+                    from: userAccount,
+                    value: priceInWei
+                });
+
                 alert("NFT purchased successfully!");
             } catch (error) {
                 alert("Transaction failed: " + error.message);
