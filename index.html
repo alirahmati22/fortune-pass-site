@@ -96,6 +96,10 @@
             try {
                 // دریافت مقدار قیمت از قرارداد
                 const claimCondition = await contract.methods.getClaimConditionById(0).call();
+                
+                // نمایش مقدار دریافتی در کنسول برای تست
+                console.log("Claim Condition Data:", claimCondition);
+
                 const priceInWei = claimCondition.pricePerToken; // مقدار قیمت NFT در واحد WEI
 
                 // ارسال تراکنش خرید NFT
