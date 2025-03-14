@@ -94,11 +94,13 @@
             const contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
 
             try {
-                // دریافت مقدار قیمت از قرارداد
-                const claimCondition = await contract.methods.getClaimConditionById(0).call();
+                // دریافت مقدار active claim condition ID
+                const conditionId = await contract.methods.getActiveClaimConditionId().call();
+
+                // دریافت اطلاعات claimCondition
+                const claimCondition = await contract.methods.getClaimConditionById(conditionId).call();
                 
-                // نمایش مقدار دریافتی در کنسول برای تست
-                console.log("Claim Condition Data:", claimCondition);
+                console.log("Claim Condition Data:", claimCondition); // نمایش مقدار در کنسول برای بررسی
 
                 const priceInWei = claimCondition.pricePerToken; // مقدار قیمت NFT در واحد WEI
 
