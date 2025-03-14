@@ -64,10 +64,20 @@
     <script>
         // آدرس قرارداد NFT شما
         const CONTRACT_ADDRESS = "0xa502378184040D0B272A4c9105347Cca2A908bDc";  
-        const CONTRACT_ABI = []; // **اینجا باید ABI قرارداد اضافه شود**
+        let CONTRACT_ABI = []; // در زمان اجرا از GitHub بارگذاری می‌شود
 
         let web3;
         let userAccount;
+
+        // بارگذاری ABI از GitHub
+        async function loadABI() {
+            try {
+                const response = await fetch("https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/fortune-pass-site/main/abi.json");
+                CONTRACT_ABI = await response.json();
+            } catch (error) {
+                console.error("Failed to load ABI:", error);
+            }
+        }
 
         // تابع اتصال کیف پول
         async function connectWallet() {
@@ -93,6 +103,8 @@
                 alert("Please connect your wallet first!");
                 return;
             }
+
+            await loadABI(); // بارگذاری ABI قبل از ایجاد قرارداد
 
             const contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
 
