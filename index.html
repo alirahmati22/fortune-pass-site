@@ -84,7 +84,7 @@
             }
         }
 
-        // تابع خرید NFT
+        // تابع خرید NFT با مقدار قیمت ثابت ۰.۲ ETH
         async function buyNFT() {
             if (!web3 || !userAccount) {
                 alert("Please connect your wallet first!");
@@ -94,15 +94,8 @@
             const contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
 
             try {
-                // دریافت مقدار active claim condition ID
-                const conditionId = await contract.methods.getActiveClaimConditionId().call();
-
-                // دریافت اطلاعات claimCondition
-                const claimCondition = await contract.methods.getClaimConditionById(conditionId).call();
-                
-                console.log("Claim Condition Data:", claimCondition); // نمایش مقدار در کنسول برای بررسی
-
-                const priceInWei = claimCondition.pricePerToken; // مقدار قیمت NFT در واحد WEI
+                // مقدار قیمت ثابت برای تست (۰.۲ ETH)
+                const priceInWei = web3.utils.toWei("0.2", "ether"); // مقدار قیمت را روی ۰.۲ ETH تنظیم کردیم
 
                 // ارسال تراکنش خرید NFT
                 await contract.methods.claim().send({
