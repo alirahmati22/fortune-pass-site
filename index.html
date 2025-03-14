@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortune Pass NFT</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        h1 {
+            font-size: 3rem;
+        }
+        a {
+            display: block;
+            font-size: 1.5rem;
+            color: #00aced;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        button {
+            background-color: #00aced;
+            color: #fff;
+            font-size: 1.5rem;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0084b4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fortune Pass NFT</h1>
+    <p>Follow us on:</p>
+    <a href="https://x.com/Fortunepassnft0" target="_blank">Twitter (X)</a>
+    <button onclick="connectWallet()">Connect Wallet</button>
+    <button onclick="buyNFT()">Buy NFT</button>
+
+    <script>
+        const CONTRACT_ADDRESS = "0xa502378184040D0B272A4c9105347Cca2A908bDc";  
+        const CONTRACT_ABI = []; // ABI قرارداد را اینجا وارد کنید
+
+        let web3;
+        let userAccount;
+
+        async function connectWallet() {
+            if (window.ethereum) {
+                try {
+                    web3 = new Web3(window.ethereum);
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    userAccount = accounts[0];
+                    alert("Connected: " + userAccount);
+                } catch (error) {
+                    alert("Connection failed: " + error.message);
+                }
+            } else {
+                alert("Please install MetaMask!");
+            }
+        }
+
+        async function buyNFT() {
+            if (!web3 || !userAccount) {
+                alert("Please connect your wallet first!");
+                return;
+            }
+
+            const contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
+            try {
+                await contract.methods.buyNFT().send({ from: userAccount, value: web3.utils.toWei("0.1", "ether") });
+                alert("NFT purchased successfully!");
+            } catch (error) {
+                alert("Transaction failed: " + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
