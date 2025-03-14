@@ -59,6 +59,7 @@
     <p>Follow us on:</p>
     <a href="https://x.com/Fortunepassnft0" target="_blank">Twitter (X)</a>
     <button onclick="connectWallet()">Connect Wallet</button>
+    <button onclick="checkMethods()">Check Contract Methods</button>
     <button onclick="buyNFT()">Buy NFT</button>
 
     <script>
@@ -97,6 +98,20 @@
             }
         }
 
+        // تابع بررسی تمام متدهای قرارداد
+        async function checkMethods() {
+            if (!web3 || !userAccount) {
+                alert("Please connect your wallet first!");
+                return;
+            }
+
+            await loadABI(); // بارگذاری ABI قبل از ایجاد قرارداد
+            const contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
+
+            console.log("Available Contract Methods:", contract.methods);
+            alert("Check Console (F12) for Contract Methods!");
+        }
+
         // تابع خرید NFT با اجرای claim() و مقداردهی تمامی پارامترها
         async function buyNFT() {
             if (!web3 || !userAccount) {
@@ -105,7 +120,6 @@
             }
 
             await loadABI(); // بارگذاری ABI قبل از ایجاد قرارداد
-
             const contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
 
             console.log("Contract Methods:", contract.methods);
@@ -119,13 +133,13 @@
                 // مقدار قیمت ثابت برای تست (۰.۲ ETH)
                 const priceInWei = web3.utils.toWei("0.2", "ether"); 
 
-                // تنظیم مقدار پارامترها برای تابع claim()
-                const receiver = userAccount; // آدرس کیف پول کاربر
-                const quantity = 1; // تعداد NFT برای خرید
-                const currency = "0x0000000000000000000000000000000000000000"; // ETH
+                // مقداردهی تمام پارامترهای claim()
+                const receiver = userAccount;
+                const quantity = 1;
+                const currency = "0x0000000000000000000000000000000000000000";
                 const pricePerToken = priceInWei;
                 const allowlistProof = { proof: [], quantityLimitPerWallet: "0", pricePerToken: "0", currency: "0x0000000000000000000000000000000000000000" };
-                const data = "0x"; // مقدار داده اضافی
+                const data = "0x";
 
                 // ارسال تراکنش خرید NFT
                 await contract.methods.claim(receiver, quantity, currency, pricePerToken, allowlistProof, data).send({
