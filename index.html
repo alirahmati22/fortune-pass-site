@@ -64,7 +64,7 @@
     <script>
         // آدرس قرارداد NFT شما
         const CONTRACT_ADDRESS = "0xa502378184040D0B272A4c9105347Cca2A908bDc";  
-        let CONTRACT_ABI = []; // در زمان اجرا از GitHub بارگذاری می‌شود
+        let CONTRACT_ABI = []; // **در زمان اجرا از GitHub بارگذاری می‌شود**
 
         let web3;
         let userAccount;
@@ -108,7 +108,7 @@
 
             const contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
 
-            // بررسی کنیم که `contract.methods` مقدار دارد یا نه
+            // بررسی اینکه `contract.methods` مقدار دارد یا نه
             console.log("Contract Methods:", contract.methods);
 
             if (!contract.methods.claim) {
