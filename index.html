@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fortune Pass NFT</title>
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@metamask/detect-provider"></script>
     <style>
         body {
             text-align: center;
@@ -70,17 +71,19 @@
 
         // تابع اتصال کیف پول
         async function connectWallet() {
-            if (window.ethereum) {
-                try {
-                    web3 = new Web3(window.ethereum);
-                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    userAccount = accounts[0];
-                    alert("Connected: " + userAccount);
-                } catch (error) {
-                    alert("Connection failed: " + error.message);
-                }
-            } else {
+            const provider = await detectEthereumProvider();
+            if (!provider) {
                 alert("Please install MetaMask!");
+                return;
+            }
+
+            try {
+                web3 = new Web3(provider);
+                const accounts = await web3.eth.requestAccounts();
+                userAccount = accounts[0];
+                alert("Connected: " + userAccount);
+            } catch (error) {
+                alert("Connection failed: " + error.message);
             }
         }
 
@@ -93,6 +96,14 @@
 
             const contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
 
+            // بررسی کنیم که `contract.methods` مقدار دارد یا نه
+            console.log("Contract Methods:", contract.methods);
+
+            if (!contract.methods.claim) {
+                alert("Error: 'claim()' function not found in contract. Check ABI.");
+                return;
+            }
+
             try {
                 // مقدار قیمت ثابت برای تست (۰.۲ ETH)
                 const priceInWei = web3.utils.toWei("0.2", "ether"); 
@@ -100,4 +111,22 @@
                 // تنظیم مقدار پارامترها برای تابع claim()
                 const receiver = userAccount; // آدرس کیف پول کاربر
                 const quantity = 1; // تعداد NFT برای خرید
-                const currency = "0x
+                const currency = "0x0000000000000000000000000000000000000000"; // ETH
+                const pricePerToken = priceInWei;
+                const allowlistProof = { proof: [], quantityLimitPerWallet: "0", pricePerToken: "0", currency: currency };
+                const data = "0x"; // مقدار داده اضافی
+
+                // ارسال تراکنش خرید NFT
+                await contract.methods.claim(receiver, quantity, currency, pricePerToken, allowlistProof, data).send({
+                    from: userAccount,
+                    value: priceInWei
+                });
+
+                alert("NFT purchased successfully!");
+            } catch (error) {
+                alert("Transaction failed: " + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
