@@ -61,12 +61,14 @@
     <button onclick="buyNFT()">Buy NFT</button>
 
     <script>
+        // آدرس قرارداد NFT شما
         const CONTRACT_ADDRESS = "0xa502378184040D0B272A4c9105347Cca2A908bDc";  
-        const CONTRACT_ABI = []; // ABI قرارداد را اینجا وارد کنید
+        const CONTRACT_ABI = []; // **اینجا باید ABI قرارداد اضافه شود**
 
         let web3;
         let userAccount;
 
+        // تابع اتصال کیف پول
         async function connectWallet() {
             if (window.ethereum) {
                 try {
@@ -82,6 +84,7 @@
             }
         }
 
+        // تابع خرید NFT
         async function buyNFT() {
             if (!web3 || !userAccount) {
                 alert("Please connect your wallet first!");
@@ -91,10 +94,14 @@
             const contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
 
             try {
-                // دریافت قیمت NFT از قرارداد
-                const price = await contract.methods.claimCondition().call(); // تابع دریافت قیمت را بررسی کنید
-                const priceInWei = web3.utils.toWei(price.toString(), "ether");
+                // دریافت مقدار active claim condition ID
+                const conditionId = await contract.methods.getActiveClaimConditionId().call(); // مقدار آن ۰ است
 
+                // دریافت اطلاعات claimCondition
+                const claimCondition = await contract.methods.getClaimConditionById(conditionId).call();
+                const priceInWei = claimCondition.pricePerToken; // مقدار قیمت توکن در واحد WEI
+
+                // ارسال تراکنش خرید NFT
                 await contract.methods.claim().send({
                     from: userAccount,
                     value: priceInWei
