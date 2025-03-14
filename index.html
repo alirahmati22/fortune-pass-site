@@ -100,22 +100,4 @@
                 // تنظیم مقدار پارامترها برای تابع claim()
                 const receiver = userAccount; // آدرس کیف پول کاربر
                 const quantity = 1; // تعداد NFT برای خرید
-                const currency = "0x0000000000000000000000000000000000000000"; // ETH
-                const pricePerToken = priceInWei;
-                const allowlistProof = { proof: [], quantityLimitPerWallet: "0", pricePerToken: "0", currency: currency };
-                const data = "0x"; // مقدار داده اضافی
-
-                // ارسال تراکنش خرید NFT
-                await contract.methods.claim(receiver, quantity, currency, pricePerToken, allowlistProof, data).send({
-                    from: userAccount,
-                    value: priceInWei
-                });
-
-                alert("NFT purchased successfully!");
-            } catch (error) {
-                alert("Transaction failed: " + error.message);
-            }
-        }
-    </script>
-</body>
-</html>
+                const currency = "0x
